@@ -40,6 +40,23 @@ function gfx.drawHexMap(map, x, y, radius, fillPct)
     end
 end
 
+function gfx.renderResourceTile(sprite, x, y, mx, my, radius)
+    local dx, dy = mx + radius*(3*segmentWidth)*x, my + radius*segmentHeight*(y*2 + x%2)
+
+    local image, colors = sprite[1], sprite[2]
+
+    love.graphics.setColor(unpack(colors.bg))
+    gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.9)
+
+    love.graphics.setColor(unpack(colors.fg))
+    love.graphics.translate((dx), (dy))
+    for i = 1, #image do
+        love.graphics.line(image[i])
+    end
+    love.graphics.translate(-(dx), -(dy))
+    love.graphics.setColor(1, 1, 1)
+end
+
 function gfx.screenToHex(x, y, mx, my, radius)
     radius = radius or 50
     x = x - mx

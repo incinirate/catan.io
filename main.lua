@@ -1,4 +1,7 @@
-local gfx = require "gfx"
+local gfx = require("gfx")
+local _ = require("luascore")
+
+local sprites = require("sprites")
 
 function love.load()
 end
@@ -11,29 +14,31 @@ local arr = {
     [ 2] = {       [-1]=2,[0]=3,4  }
 }
 
-local rock = {{15.215311004784,4.7368421052633,11.770334928229,5.5980861244021,6.4593301435401,-21.387559808613,13.492822966507,-22.966507177034,26.267942583732,-11.196172248804,23.54066985646,-6.746411483254,30,9,22.105263157895,19.952153110048,15.215311004784,4.7368421052633,17.655502392344,-3.8755980861242,23.54066985646,-6.746411483254},{26.267942583732,-11.196172248804,30,9},{6.4593301435401,-21.387559808613,-12.631578947368,-28.277511961722,-18.803827751197,-30,-24.688995215311,-20.526315789474,-26.124401913876,-13.062200956938,-28.708133971292,-10.334928229665,-30,-4.019138755981,-26.267942583732,0.43062200956955,-21.53110047847,18.22966507177,-10.047846889952,30,0.14354066985615,28.277511961722,6.8899521531095,29.856459330143,22.105263157895,19.952153110048},{6.8899521531095,29.856459330143,11.770334928229,5.5980861244021,-0.71770334928262,-0.86124401913859,-4.593301435407,4.8803827751192,0.14354066985615,28.277511961722,-16.65071770335,17.511961722488,-21.53110047847,18.22966507177},{-0.71770334928262,-0.86124401913859,-7.0334928229666,-15.071770334928,-12.631578947368,-28.277511961722},{-16.65071770335,17.511961722488,-7.0334928229666,-15.071770334928},}
-local wheat = {{12.954545454545,-12.272727272727,12.954545454545,-21.818181818182,14.318181818182,-23.181818181818,15.681818181818,-21.818181818182,15.681818181818,-13.636363636364,12.954545454545,-12.272727272727},{10.227272727273,-10.909090909091,7.5,-9.5454545454545,7.5,-25.909090909091,8.8636363636364,-27.272727272727,10.227272727273,-25.909090909091,10.227272727273,-10.909090909091},{-8.8636363636364,-25.909090909091,-8.8636363636364,-10.909090909091,-6.1363636363636,-9.5454545454545,-6.1363636363636,-25.909090909091,-7.5,-27.272727272727,-8.8636363636364,-25.909090909091},{3.4090909090909,-30,2.0454545454545,-28.636363636364,2.0454545454545,-21.818181818182,4.7727272727273,-17.727272727273,4.7727272727273,-28.636363636364,3.4090909090909,-30},{-3.4090909090909,-17.727272727273,-0.68181818181818,-21.818181818182,-0.68181818181818,-28.636363636364,-2.0454545454545,-30,-3.4090909090909,-28.636363636364,-3.4090909090909,-17.727272727273},{-15.681818181818,-13.636363636364,-15.681818181818,-21.818181818182,-14.318181818182,-23.181818181818,-12.954545454545,-21.818181818182,-12.954545454545,-12.272727272727,-15.681818181818,-13.636363636364},{0.68181818181818,-1.3636363636364,4.7727272727273,-12.272727272727,0.68181818181818,-19.090909090909,-3.4090909090909,-12.272727272727,0.68181818181818,-1.3636363636364},{-0.68181818181818,1.3636363636364,-3.4090909090909,-5.4545454545455,-15.681818181818,-10.909090909091,-11.590909090909,-1.3636363636364,-0.68181818181818,4.0909090909091,-0.68181818181818,6.8181818181818},{2.0454545454545,6.8181818181818,2.0454545454545,4.0909090909091,11.590909090909,-1.3636363636364,15.681818181818,-10.909090909091,4.7727272727273,-5.4545454545455,2.0454545454545,1.3636363636364},{2.0454545454545,13.636363636364,4.6022727272727,5.625,15.681818181818,0,11.590909090909,10.909090909091,2.0454545454545,16.363636363636,2.0454545454545,25.909090909091,0.68181818181818,30,-0.68181818181818,25.909090909091,-0.68181818181818,16.363636363636,-11.590909090909,10.909090909091,-15.681818181818,0,-3.4090909090909,5.4545454545455,-0.68181818181818,13.636363636364},}
-
-local function rgb(r, g, b)
-    return r / 255, g / 255, b / 255
-end
-
 function love.draw()
     love.graphics.clear(0.0352941176, 0.517647059, 0.890196078)--0.454901961, 0.725490196, 1)
 
     local w, h = love.window.getMode()
 
-    -- local x, y = gfx.screenToHex(love.mouse.getX(), love.mouse.getY(), w / 2, h / 2, 25)
-    -- gfx.drawHexagonTC(x, y, w / 2, h / 2, 25, "fill")
+    -- Tiles
+    local tx, ty = gfx.screenToHex(love.mouse.getX(), love.mouse.getY(), w / 2, h / 2, 50)
+    gfx.drawHexagonTC(tx, ty, w / 2, h / 2, 50, "fill", 0.5)
+
+    -- Edges
+    -- local tx, ty = gfx.screenToHex(love.mouse.getX(), love.mouse.getY(), w / 2, h / 2, 25)
+    -- gfx.drawHexagonTC(tx, ty, w / 2, h / 2, 25, "fill", 0.9)
     
-    local mx, my = w / 2, h / 2 -- - math.cos(math.pi/3)*50, h/2
-    local rad = 2*25/math.sqrt(3)--25*((2*math.sqrt(3) + 1)/4)
-    local x, y = gfx.screenToHex(love.mouse.getY(), love.mouse.getX(), my, mx, rad)
+    -- Corners
+    -- local mx, my = w / 2, h / 2 -- - math.cos(math.pi/3)*50, h/2
+    -- local rad = 2*25/math.sqrt(3)--25*((2*math.sqrt(3) + 1)/4)
+    -- local x, y = gfx.screenToHex(love.mouse.getY(), love.mouse.getX(), my, mx, rad)
     -- gfx.drawHexagonTCI(x, y, mx, my, rad, "fill")
 
     -- love.graphics.setColor(rgb(44, 44, 84)) -- Rock
-    love.graphics.setColor(rgb(255, 121, 63)) -- Wheat
-    gfx.drawHexagonTC(0, 0, w / 2, h / 2, nil, "fill", 0.9)
+    -- love.graphics.setColor(rgb(255, 121, 63)) -- Wheat
+    -- love.graphics.setColor(rgb(179, 57, 57)) -- Brick
+    -- love.graphics.setColor(rgb(23, 99, 82)) -- Wood
+    -- love.graphics.setColor(rgb(0,0,0)) -- Wool
+    -- gfx.drawHexagonTC(0, 0, w / 2, h / 2, nil, "fill", 0.9)
     
     -- -- Rock
     -- love.graphics.setColor(rgb(112, 111, 211))
@@ -44,14 +49,64 @@ function love.draw()
     -- love.graphics.translate(-(w / 2), -(h / 2))
     -- love.graphics.setColor(1, 1, 1)
 
-    -- Wheat
-    love.graphics.setColor(rgb(255, 218, 121))
-    love.graphics.translate((w / 2), (h / 2))
-    for i = 1, #wheat do
-        love.graphics.line(wheat[i])
+    -- -- Wheat
+    -- love.graphics.setColor(rgb(255, 218, 121))
+    -- love.graphics.translate((w / 2), (h / 2))
+    -- for i = 1, #wheat do
+    --     love.graphics.line(wheat[i])
+    -- end
+    -- love.graphics.translate(-(w / 2), -(h / 2))
+    -- love.graphics.setColor(1, 1, 1)
+
+    -- -- Brick
+    -- love.graphics.setColor(rgb(255, 218, 121))
+    -- love.graphics.translate((w / 2), (h / 2))
+    -- for i = 1, #brick do
+    --     love.graphics.line(brick[i])
+    -- end
+    -- love.graphics.translate(-(w / 2), -(h / 2))
+    -- love.graphics.setColor(1, 1, 1)
+
+    -- -- Wood
+    -- love.graphics.setColor(rgb(43, 29, 14))
+    -- love.graphics.translate((w / 2), (h / 2))
+    -- for i = 1, #wood do
+    --     love.graphics.line(wood[i])
+    -- end
+    -- love.graphics.translate(-(w / 2), -(h / 2))
+    -- love.graphics.setColor(1, 1, 1)
+
+    -- -- Wool
+    -- love.graphics.setColor(rgb(255, 255, 255))
+    -- love.graphics.translate((w / 2), (h / 2))
+    -- for i = 1, #wool do
+    --     love.graphics.line(wool[i])
+    -- end
+    -- love.graphics.translate(-(w / 2), -(h / 2))
+    -- love.graphics.setColor(1, 1, 1)
+
+    -- print(sprites)
+
+    local index = 0
+    local function indexer(v)
+        index = index + 1
+        return index, v
     end
-    love.graphics.translate(-(w / 2), -(h / 2))
-    love.graphics.setColor(1, 1, 1)
+
+    math.randomseed(563782)
+
+    local locs = _.mapWithKey(arr, _.c(indexer, _.uncurry(_.c(_.partial(_.c, _, _.keys), _.c(_.curry(_.zip, 2), _.repeatVal)))))
+    for i = 1, #locs do
+        local locList = locs[i]
+        for k, v in pairs(locList) do
+            local vals = _.values(sprites.resources)
+            gfx.renderResourceTile(_.sample(vals), v[1], v[2], w / 2, h / 2, 50)
+        end
+        
+    end
+    -- error(#locs)
+
+    gfx.renderResourceTile(sprites.resources.rock, tx, ty, w / 2, h / 2, 50)
 
     gfx.drawHexMap(arr, w / 2, h / 2, nil, 0.9)
 end
