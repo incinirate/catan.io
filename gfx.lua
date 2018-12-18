@@ -26,7 +26,7 @@ function gfx.drawHexagonTCI(x, y, mx, my, radius, mode)
     gfx.drawHexagonI(mx + radius*segmentHeight*(y*2 + x%2), my + radius*(3*segmentWidth)*x, radius, mode)
 end
 
-function gfx.drawHexMap(map, x, y, radius, fillPct)
+function gfx.drawHexMap(map, x, y, radius, fillPct, mode)
     radius = radius or 50
     fillPct = fillPct or 1
     x = x or 0
@@ -35,7 +35,7 @@ function gfx.drawHexMap(map, x, y, radius, fillPct)
     for i, col in pairs(map) do
         for j, tile in pairs(col) do
             -- gfx.drawHexagon(x + radius*(3*segmentWidth)*i, y + radius*segmentHeight*(j*2 + i%2), radius)
-            gfx.drawHexagonTC(i, j, x, y, radius, nil, fillPct)
+            gfx.drawHexagonTC(i, j, x, y, radius, mode, fillPct)
         end
     end
 end
@@ -46,7 +46,7 @@ function gfx.renderResourceTile(sprite, x, y, mx, my, radius)
     local image, colors = sprite[1], sprite[2]
 
     love.graphics.setColor(unpack(colors.bg))
-    gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.9)
+    gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.95)
 
     love.graphics.setColor(unpack(colors.fg))
     love.graphics.translate((dx), (dy))

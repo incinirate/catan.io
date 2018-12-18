@@ -3,4 +3,6 @@ function love.conf(t)
     t.window.height = 480
 
     t.window.msaa = 8
+
+    t.window.resizable = true
 end

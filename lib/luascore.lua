@@ -175,7 +175,7 @@ end
 
 function _.repeatVal(value)
   _.expect("repeatVal", 1, "value", value)
-  return setmetatable({}, {__index = _.const(value)})
+  return setmetatable({}, {__index = _.const(value), __len = _.const(math.huge)})
 end
 
 local debugInfo = debug.getinfo
