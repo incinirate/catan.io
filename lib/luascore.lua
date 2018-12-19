@@ -438,11 +438,28 @@ function _.shuffle(t)
   local nt = _.clone(t)
 
   for i = #nt, 1, -1 do
-    local j = math.random(1, i)
+    local j = love.math.random(1, i)
     nt[i], nt[j] = nt[j], nt[i]
   end
 
   return nt
+end
+
+function _.clamp(v, min, max)
+  _.expect("clamp", 1, "number", v)
+  _.expect("clamp", 2, "number", min)
+
+  if not max then
+    min, max = -math.huge, min
+  end
+
+  if v < min then
+    return min
+  elseif v > max then
+    return max
+  end
+
+  return v
 end
 
 function _.sortBy(t, f)
@@ -483,7 +500,7 @@ end
 
 function _.sample(t)
   _.expect("sample", 1, "table", t)
-  return t[math.random(1, #t)]
+  return t[love.math.random(1, #t)]
 end
 
 function _.head(t)

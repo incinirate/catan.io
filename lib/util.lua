@@ -21,4 +21,18 @@ function util.pop(tab)
     return v
 end
 
+function util.publishPriority(namespace, levels, ...)
+    namespace[#namespace + 1] = 0
+    for i = 1, levels do
+        namespace[#namespace] = i
+        local result = glue:publish(namespace, ...)
+        if #result > 0 then
+            return result
+        end
+    end
+
+    namespace[#namespace] = "low"
+    return glue:publish(namespace, ...)
+end
+
 return util

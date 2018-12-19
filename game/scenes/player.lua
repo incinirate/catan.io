@@ -25,8 +25,8 @@ function Player:init(shape, resourcePool)
     self.translate = {0, 0}
     self.translateTarget = {0, 0}
 
-    glue:subscribe({"input", "mousePressed"}, function()
-        myHand:addCard("rock")
+    glue:subscribe({"input", "mousePressed", "low"}, function()
+        myHand:addCard(_.sample({"rock", "wheat", "wool", "brick", "wood"}))
     end)
 end
 

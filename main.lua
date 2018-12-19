@@ -11,6 +11,8 @@ local PlayerScene = require("game.scenes.player")
 local player = PlayerScene()
 
 function love.load()
+    math.randomseed(os.time())
+    love.math.setRandomSeed(os.time())
 end
 
 local arr = {
@@ -114,5 +116,5 @@ function love.update(dt)
 end
 
 function love.mousepressed(...)
-    glue:publish({"input", "mousePressed"}, ...)
+    util.publishPriority({"input", "mousePressed"}, 10, ...)
 end

@@ -40,7 +40,6 @@ local defaultRarities = util.mapData {
 
 function Board:init(shape, resourcePool, rarities)
     self.shape = shape or defaultShape
-    math.randomseed(os.time())
 
     local resourcePool = _.shuffle(resourcePool or defaultPool)
     local rarityPool = _.shuffle(rarities or defaultRarities)
