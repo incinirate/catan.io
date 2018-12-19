@@ -112,3 +112,7 @@ end
 function love.update(dt)
     player:update(dt)
 end
+
+function love.mousepressed(...)
+    glue:publish({"input", "mousePressed"}, ...)
+end

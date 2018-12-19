@@ -49,12 +49,23 @@ function gfx.renderResourceTile(sprite, x, y, mx, my, radius)
     gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.95)
 
     love.graphics.setColor(unpack(colors.fg))
-    love.graphics.translate((dx), (dy))
-    for i = 1, #image do
-        love.graphics.line(image[i])
-    end
-    love.graphics.translate(-(dx), -(dy))
+    gfx.renderLineSprite(image, dx, dy)
     love.graphics.setColor(1, 1, 1)
+end
+
+function gfx.renderLineSprite(sprite, x, y)
+    love.graphics.push()
+    love.graphics.translate(x, y)
+    
+    for i = 1, #sprite do
+        love.graphics.line(sprite[i])
+    end
+
+    love.graphics.pop()
+end
+
+function gfx.hexToScreen(x, y, mx, my, radius)
+    return mx + radius*(3*segmentWidth)*x, my + radius*segmentHeight*(y*2 + x%2)
 end
 
 function gfx.screenToHex(x, y, mx, my, radius)

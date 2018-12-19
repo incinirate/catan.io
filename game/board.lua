@@ -6,6 +6,8 @@ local gfx = require("lib.gfx")
 local util = require("lib.util")
 local sprites = require("assets.sprites")
 
+local rareGlyphs = require("assets.rareGlyphs")
+
 local defaultShape = {
     [-2] = {        [-1]=2,[0]=3,4   },
     [-1] = { [-2]=1,[-1]=2,[0]=3,4   },
@@ -23,17 +25,34 @@ local defaultPool = util.mapData {
     desert = 1 
 }
 
-function Board:init(shape, resourcePool)
+local defaultRarities = util.mapData {
+    [2] = 1,
+    [3] = 2,
+    [4] = 2,
+    [5] = 2,
+    [6] = 2,
+    [8] = 2,
+    [9] = 2,
+    [10] = 2,
+    [11] = 2,
+    [12] = 1
+}
+
+function Board:init(shape, resourcePool, rarities)
     self.shape = shape or defaultShape
     math.randomseed(os.time())
 
     local resourcePool = _.shuffle(resourcePool or defaultPool)
+    local rarityPool = _.shuffle(rarities or defaultRarities)
 
     for i, seg in pairs(self.shape) do
         for j, v in pairs(seg) do
             local resource = util.pop(resourcePool)
             
-            seg[j] = resource
+            seg[j] = {resource}
+            if resource ~= "desert" then
+                seg[j][2] = util.pop(rarityPool)
+            end
         end
     end
 end
@@ -44,11 +63,31 @@ function Board:draw()
 
     for i, seg in pairs(self.shape) do
         for j, v in pairs(seg) do
-            local resource = seg[j]
+            local resource = seg[j][1]
             gfx.renderResourceTile(sprites.resources[resource], i, j, 0, 0, 50)
+
+            local dx, dy = gfx.hexToScreen(i, j, 0, 0, 50)
+            local rarity = seg[j][2]
+            if rarity then
+                if rarity == 6 or rarity == 8 then
+                    love.graphics.setColor(1, 0.9, 0.9, 0.8)
+                else
+                    love.graphics.setColor(1, 1, 1, 0.8)
+                end
+                -- love.graphics.circle("fill", dx, dy - 26, 10, 30)
+                love.graphics.arc("fill",dx - math.cos(math.pi / 3)*50 + 2, dy - math.sin(math.pi / 3)*50 + 4, 20, 0, 2 * math.pi / 3)
+
+                if rarity == 6 or rarity == 8 then
+                    love.graphics.setColor(1, 0, 0)
+                else
+                    love.graphics.setColor(0, 0, 0)
+                end
+                love.graphics.draw(rareGlyphs[rarity], dx - math.cos(math.pi / 3)*50 - 2, dy - math.sin(math.pi / 3)*50 + 4, 0, rareGlyphs.scaleTo(10))
+            end
         end
     end
 
+    love.graphics.setColor(util.rgb(255, 255, 255))
     gfx.drawHexMap(self.shape, 0, 0, nil, 0.9)
 end
 

@@ -4,7 +4,9 @@ local Player = class()
 local _ = require("lib.luascore")
 local gfx = require("lib.gfx")
 local Board = require("game.board")
+local Card = require("game.card")
 local GameState = require("game.gameState")
+local PlayerHand = require("game.playerHand")
 
 local vignetteShader = love.graphics.newShader(love.filesystem.read("assets/shaders/vignette.glsl"))
 local refreshCanvas, pCanvas = _.partial(love.graphics.newCanvas, w, h, {msaa = 8})
@@ -13,12 +15,19 @@ do
     pCanvas = refreshCanvas()
 end
 
+-- local rockTest = Card("rock")
+local myHand = PlayerHand()
+
 function Player:init(shape, resourcePool)
     self.state = GameState(shape, resourcePool)
     self.zoom = 1
     self.targetZoom = 1
     self.translate = {0, 0}
     self.translateTarget = {0, 0}
+
+    glue:subscribe({"input", "mousePressed"}, function()
+        myHand:addCard("rock")
+    end)
 end
 
 function Player:draw()
@@ -125,12 +134,19 @@ function Player:draw()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(pCanvas)
     love.graphics.setShader()
+
+    -- rockTest:draw(50, oh - 200)
+    love.graphics.translate(40, oh)
+    myHand:draw()
+    love.graphics.translate(-40, -oh)
 end
 
 function Player:update(dt)
     self.zoom = self.zoom + (self.targetZoom - self.zoom)*5*dt
     self.translate[1] = self.translate[1] + (self.translateTarget[1] - self.translate[1])*5*dt
     self.translate[2] = self.translate[2] + (self.translateTarget[2] - self.translate[2])*5*dt
+
+    myHand:update(dt)
 end
 
 return Player
