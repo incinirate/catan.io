@@ -1,6 +1,10 @@
 local class = require("lib.class")
 local GameState = class()
 
-function GameState.init()
+local Board = require("game.board")
 
+function GameState:init(shape, resourcePool)
+    self.board = Board(shape, resourcePool)
 end
+
+return GameState

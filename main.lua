@@ -1,11 +1,11 @@
 local Mediator = require("lib.mediator")
 _G.glue = Mediator()
 
-local gfx = require("gfx")
+local gfx = require("lib.gfx")
 local _ = require("lib.luascore")
 
-local util = require("util")
-local sprites = require("sprites")
+local util = require("lib.util")
+local sprites = require("assets.sprites")
 
 local PlayerScene = require("game.scenes.player")
 local player = PlayerScene()
@@ -22,7 +22,7 @@ local arr = {
 }
 
 function love.draw()
-    love.graphics.clear(0.0352941176, 0.517647059, 0.890196078)--0.454901961, 0.725490196, 1)
+    love.graphics.clear()--0.454901961, 0.725490196, 1)
 
     local w, h = love.window.getMode()
 

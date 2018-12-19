@@ -2,9 +2,9 @@ local class = require("lib.class")
 local Board = class()
 
 local _ = require("lib.luascore")
-local gfx = require("gfx")
-local util = require("util")
-local sprites = require("sprites")
+local gfx = require("lib.gfx")
+local util = require("lib.util")
+local sprites = require("assets.sprites")
 
 local defaultShape = {
     [-2] = {        [-1]=2,[0]=3,4   },
@@ -42,21 +42,6 @@ function Board:draw()
     love.graphics.setColor(util.rgb(255, 255, 255))
     gfx.drawHexMap(self.shape, 0, 0, nil, 1.1, "fill")
 
-    local index = 0
-    local function indexer(v)
-        index = index + 1
-        return index, v
-    end
-
-    -- local locs = _.mapWithKey(self.shape, _.c(indexer, _.uncurry(_.c(_.partial(_.c, _, _.keys), _.c(_.curry(_.zip, 2), _.repeatVal)))))
-    -- for i = 1, #locs do
-    --     local locList = locs[i]
-    --     for k, v in pairs(locList) do
-    --         local vals = _.values(sprites.resources)
-    --         gfx.renderResourceTile(_.sample(vals), v[1], v[2], 0, 0, 50)
-    --     end
-    -- end
-
     for i, seg in pairs(self.shape) do
         for j, v in pairs(seg) do
             local resource = seg[j]
@@ -66,5 +51,113 @@ function Board:draw()
 
     gfx.drawHexMap(self.shape, 0, 0, nil, 0.9)
 end
+
+--   /----1----\
+--  2           3 
+-- /             \
+-- \             /
+--  4           5
+--   \----6----/
+Board:static("getEdges", function(x, y)
+    local x2 = 2*x
+    local y2 = 2*y
+    if x % 2 ~= 0 then
+        y2 = y2 + 1
+    end
+
+    return {
+        {x2    , y2 - 1},
+        {x2 - 1, y2 - 1},
+        {x2 + 1, y2 - 1},
+        {x2 - 1, y2    },
+        {x2 + 1, y2    },
+        {x2    , y2 + 1}
+    }
+end)
+
+--   2-----3
+--  /       \
+-- 1         4
+--  \       /
+--   6-----5
+Board:static("getCorners", function(x, y)
+    local x2 = 2*x
+    local y2 = 2*y
+    if x % 2 ~= 0 then
+        y2 = y2 + 1
+    end
+
+    x2 = x2 - math.floor((x + 1)/2)
+
+    return {
+        {y2    , x2 - 1          },
+        {y2 - 1, x2 - 1 + (x % 2)},
+        {y2 - 1, x2     + (x % 2)},
+        {y2    , x2 + 1          },
+        {y2 + 1, x2 - 1 + (x % 2)},
+        {y2 + 1, x2     + (x % 2)}
+    }
+end)
+
+-- Returns the coordinates of the 2 tiles that share the given edge
+Board:static("getEdgeTiles", function(x, y)
+    if x % 2 == 0 then
+        y = y + ((x + 2) % 4)/2
+
+        return {
+            {x / 2, y / 2},
+            {x / 2, y / 2 - 1}
+        }
+    else
+        local which = (x + ((y + (((x + 1) % 4) / 2)) % 2)) % 4
+        if which == 0 then
+            return {
+                {(x - 1) / 2, (y - 1) / 2},
+                {(x + 1) / 2, (y + 1) / 2}
+            }
+        elseif which == 1 then
+            return {
+                {(x - 1) / 2, (y + 1) / 2},
+                {(x + 1) / 2, (y - 1) / 2}
+            }
+        else
+            return {
+                {(x - 1) / 2, y / 2},
+                {(x + 1) / 2, y / 2}
+            }
+        end
+    end
+end)
+
+Board:static("getCornerTiles", function(x,y)
+    local x2 = x / 2
+    local y23 = 2 * y / 3
+
+    if (y % 3 == 2 and x % 2 == 0) then
+        return {
+            {y23 + 2/3, x2    },
+            {y23 - 1/3, x2    },
+            {y23 - 1/3, x2 - 1}
+        }
+    elseif (y % 3 == 0 and x % 2 == 1) then
+        return {
+            {y23 + 1, x2 - 1/2},
+            {y23    , x2 - 1/2},
+            {y23    , x2 + 1/2}
+        }
+    elseif (y % 3 == 2 and x % 2 == 1) then
+        return {
+            {y23 - 1/3, x2 - 1/2},
+            {y23 + 2/3, x2 + 1/2},
+            {y23 + 2/3, x2 - 1/2}
+        }
+    else
+        return {
+            {y23 - 2/3, x2    },
+            {y23 + 1/3, x2    },
+            {y23 + 1/3, x2 - 1}
+        }
+    end
+end)
 
 return Board
