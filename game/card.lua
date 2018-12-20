@@ -22,6 +22,8 @@ function ResourceCard:draw(x, y)
     love.graphics.setColor(colors.fg)
     gfx.renderLineSprite(image, x + 50, y + 175/2)
 
+    love.graphics.rectangle("line", x + 5, y + 5, 90, 165, 5, 5)
+
     love.graphics.setColor(1, 1, 1, 0.5)
     love.graphics.rectangle("line", x, y, 100, 175, 5, 5)
 end

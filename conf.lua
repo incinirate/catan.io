@@ -1,4 +1,7 @@
 function love.conf(t)
+    t.window.title = "Catan IO"
+    t.console = true
+
     t.window.width = 600
     t.window.height = 480
 

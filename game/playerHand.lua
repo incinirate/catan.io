@@ -43,7 +43,11 @@ end
 
 function playerHand:addCard(type)
     local card = Card(type, -10, 0)
-    self.cards[#self.cards + 1] = card
+    local index = 1
+    while index <= #self.cards and type >= self.cards[index].type do
+        index = index + 1
+    end
+    table.insert(self.cards, index, card)
     Tween:sweep(card, "x", 0, 5)
     Tween:overshoot(card, "y", -25, 1, 5)
 end

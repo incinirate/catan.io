@@ -10,7 +10,11 @@ local sprites = require("assets.sprites")
 local PlayerScene = require("game.scenes.player")
 local player = PlayerScene()
 
+local DiscordPresence = require("game.discord")()
+
 function love.load()
+    io.stdout:setvbuf("no")
+
     math.randomseed(os.time())
     love.math.setRandomSeed(os.time())
 end
@@ -113,8 +117,14 @@ end
 
 function love.update(dt)
     player:update(dt)
+
+    DiscordPresence:update(dt)
 end
 
 function love.mousepressed(...)
     util.publishPriority({"input", "mousePressed"}, 10, ...)
+end
+
+function love.quit()
+    DiscordPresence:shutdown()
 end

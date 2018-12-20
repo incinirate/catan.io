@@ -46,7 +46,7 @@ function gfx.renderResourceTile(sprite, x, y, mx, my, radius)
     local image, colors = sprite[1], sprite[2]
 
     love.graphics.setColor(unpack(colors.bg))
-    gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.95)
+    gfx.drawHexagonTC(0, 0, dx, dy, nil, "fill", 0.85)--0.95)
 
     love.graphics.setColor(unpack(colors.fg))
     gfx.renderLineSprite(image, dx, dy)
