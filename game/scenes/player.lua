@@ -6,7 +6,8 @@ local gfx = require("lib.gfx")
 local Board = require("game.board")
 local Card = require("game.card")
 local GameState = require("game.gameState")
-local PlayerHand = require("game.playerHand")
+local PlayerHand = require("game.playerHand")()
+local ConstructionMenu = require("game.constructionMenu")()
 
 local vignetteShader = love.graphics.newShader(love.filesystem.read("assets/shaders/vignette.glsl"))
 local refreshCanvas, pCanvas = _.partial(love.graphics.newCanvas, w, h, {msaa = 8})
@@ -15,8 +16,6 @@ do
     pCanvas = refreshCanvas()
 end
 
--- local rockTest = Card("rock")
-local myHand = PlayerHand()
 
 function Player:init(shape, resourcePool)
     self.state = GameState(shape, resourcePool)
@@ -26,7 +25,7 @@ function Player:init(shape, resourcePool)
     self.translateTarget = {0, 0}
 
     glue:subscribe({"input", "mousePressed", "low"}, function()
-        myHand:addCard(_.sample({"rock", "wheat", "wool", "brick", "wood"}))
+        PlayerHand:addCard(_.sample({"rock", "wheat", "wool", "brick", "wood"}))
     end)
 end
 
@@ -49,11 +48,11 @@ function Player:draw()
     love.graphics.setColor(0.0352941176, 0.517647059, 0.890196078)
     love.graphics.rectangle("fill", 0, 0, w, h)
 
-    love.graphics.push()
-    love.graphics.scale(self.zoom, self.zoom)
+    transform:push()
+    transform:scale(self.zoom, self.zoom)
     w, h = w/self.zoom, h/self.zoom
 
-    love.graphics.translate(w / 2 + self.translate[1]/self.zoom, h / 2 + self.translate[2]/self.zoom)
+    transform:translate(w / 2 + self.translate[1]/self.zoom, h / 2 + self.translate[2]/self.zoom)
     
     do
         self.state.board:draw()
@@ -124,7 +123,7 @@ function Player:draw()
         end
     end
 
-    love.graphics.pop()
+    transform:pop()
 
     love.graphics.setCanvas()
 
@@ -135,10 +134,22 @@ function Player:draw()
     love.graphics.draw(pCanvas)
     love.graphics.setShader()
 
+    -- print(transform:getHeight())
+
+    local uiScale = math.min(ow, oh) / 800 + math.random()*0.0001 --- Uhhhh, yeah lines don't draw until window is resized without this, look into this?
+
     -- rockTest:draw(50, oh - 200)
-    love.graphics.translate(40, oh)
-    myHand:draw()
-    love.graphics.translate(-40, -oh)
+    transform:push()
+    transform:scale(uiScale, uiScale)
+    -- print(transform:getHeight())
+    -- print(uiScale)
+    transform:translate(40, transform:getHeight())
+
+    -- print(love.graphics.transformPoint(0, transform:getHeight()))
+    PlayerHand:draw()
+    ConstructionMenu:draw()
+
+    transform:pop()
 end
 
 function Player:update(dt)
@@ -146,7 +157,8 @@ function Player:update(dt)
     self.translate[1] = self.translate[1] + (self.translateTarget[1] - self.translate[1])*5*dt
     self.translate[2] = self.translate[2] + (self.translateTarget[2] - self.translate[2])*5*dt
 
-    myHand:update(dt)
+    PlayerHand:update(dt)
+    ConstructionMenu:update(dt)
 end
 
 return Player

@@ -73,14 +73,14 @@ function Board:draw()
                 else
                     love.graphics.setColor(1, 1, 1, 0.8)
                 end
-                -- love.graphics.circle("fill", dx, dy - 26, 10, 30)
-                love.graphics.arc("fill",dx - math.cos(math.pi / 3)*50*0.8 - 1, dy - math.sin(math.pi / 3)*50*0.8 - 1, 20, 0, 2 * math.pi / 3)
+                love.graphics.arc("fill", dx - math.cos(math.pi / 3)*50*0.8 - 0.5, dy - math.sin(math.pi / 3)*50*0.8 - 0.5, 20, 0, 2 * math.pi / 3)
 
                 if rarity == 6 or rarity == 8 then
                     love.graphics.setColor(1, 0, 0)
                 else
                     love.graphics.setColor(0, 0, 0)
                 end
+
                 love.graphics.draw(rareGlyphs[rarity], dx - math.cos(math.pi / 3)*50*0.8 - 6, dy - math.sin(math.pi / 3)*50*0.8, 0, rareGlyphs.scaleTo(10))
             end
         end

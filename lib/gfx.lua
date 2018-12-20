@@ -54,14 +54,14 @@ function gfx.renderResourceTile(sprite, x, y, mx, my, radius)
 end
 
 function gfx.renderLineSprite(sprite, x, y)
-    love.graphics.push()
-    love.graphics.translate(x, y)
+    transform:push()
+    transform:translate(x, y)
     
     for i = 1, #sprite do
         love.graphics.line(sprite[i])
     end
 
-    love.graphics.pop()
+    transform:pop()
 end
 
 function gfx.hexToScreen(x, y, mx, my, radius)

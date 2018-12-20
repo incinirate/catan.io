@@ -17,7 +17,7 @@ function Tween:removeByKey(tab, key)
     end
 end
 
-function Tween:sweep(tab, key, newValue, speed, threshold)
+function Tween:sweep(tab, key, newValue, speed, threshold, delay)
     speed = speed or 5
     threshold = threshold or 0.1
 
@@ -27,6 +27,7 @@ function Tween:sweep(tab, key, newValue, speed, threshold)
     obj = {
         tab = tab,
         key = key,
+        delay = delay,
         updateFn = function(dt)
             local current = tab[key]
             if abs(newValue - current) <= threshold then
@@ -42,10 +43,41 @@ function Tween:sweep(tab, key, newValue, speed, threshold)
     return obj
 end
 
-function Tween:overshoot(tab, key, newValue, duration, amount)
+function Tween:linear(tab, key, newValue, duration, delay)
     self:removeByKey(tab, key)
 
-    local start = os.clock()
+    local start = os.clock() + (delay or 0)
+    local orig = tab[key]
+
+    local obj
+    obj = {
+        tab = tab,
+        key = key,
+        delay = delay,
+        updateFn = function(dt, time)
+            local current = tab[key]
+            if time - start >= duration then
+                self:stop(obj)
+                return newValue
+            else
+                local t = time - start
+                local d = duration
+                local b = orig
+                local c = (newValue - orig)
+                t = t / d
+                return c*t + b
+            end
+        end
+    }
+
+    self.objects[#self.objects + 1] = obj
+    return obj
+end
+
+function Tween:overshoot(tab, key, newValue, duration, amount, delay)
+    self:removeByKey(tab, key)
+
+    local start = os.clock() + (delay or 0)
     local orig = tab[key]
 
     local s = amount or 1.70158
@@ -54,6 +86,7 @@ function Tween:overshoot(tab, key, newValue, duration, amount)
     obj = {
         tab = tab,
         key = key,
+        delay = delay,
         updateFn = function(dt, time)
             local current = tab[key]
             if time - start >= duration then
@@ -87,7 +120,15 @@ function Tween:update(dt)
     local time = os.clock()
     for i = #self.objects, 1, -1 do
         local obj = self.objects[i]
-        obj.tab[obj.key] = obj.updateFn(dt, time)
+        if obj.delay then
+            obj.delay = obj.delay - dt
+        else
+            obj.delay = 0
+        end
+
+        if obj.delay <= 0 then
+            obj.tab[obj.key] = obj.updateFn(dt, time)
+        end
     end
 end
 

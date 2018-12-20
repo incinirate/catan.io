@@ -11,8 +11,8 @@ function playerHand:init(initialCards)
     self.open = false
 
     glue:subscribe({"input", "mousePressed", 9}, function(x, y)
-        if self.x <= x and x < self.x + 100 then
-            if self.y - 25 <= y and y < self.y then
+        if self.x <= x and x < self.x2 then
+            if self.y2 <= y and y < self.y then
                 if not self.open then
                     self.open = true
 
@@ -54,6 +54,7 @@ end
 
 function playerHand:draw()
     self.x, self.y = love.graphics.transformPoint(0, 0)
+    self.x2, self.y2 = love.graphics.transformPoint(100, -25)
 
     for i = #self.cards, 1, -1 do
         self.cards[i]:draw()

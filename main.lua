@@ -1,6 +1,9 @@
 local Mediator = require("lib.mediator")
 _G.glue = Mediator()
 
+local TransformManager = require("lib.transformManager")()
+_G.transform = TransformManager
+
 local gfx = require("lib.gfx")
 local _ = require("lib.luascore")
 
@@ -123,6 +126,10 @@ end
 
 function love.mousepressed(...)
     util.publishPriority({"input", "mousePressed"}, 10, ...)
+end
+
+function love.mousemoved(...)
+    util.publishPriority({"input", "mouseMoved"}, 10, ...)
 end
 
 function love.quit()

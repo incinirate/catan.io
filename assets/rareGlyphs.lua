@@ -1,11 +1,11 @@
 local glyphs = {}
 
-local renderSize = 200
+local renderSize = 32
 local renderHalf = renderSize / 2
 local fontOffset = renderSize * 13/32
 
 local oldFont = love.graphics.getFont()
-local glyphFont = love.graphics.newFont("assets/fonts/arial.ttf", renderSize * 3/4)
+local glyphFont = love.graphics.newFont("assets/fonts/BebasNeue Bold.ttf", renderSize * 3/4)
 
 love.graphics.setFont(glyphFont)
 love.graphics.setColor(1, 1, 1)
@@ -24,6 +24,8 @@ for i = 2, 12 do
 
     glyphs[i] = canvas
 end
+
+glyphs.font = glyphFont
 
 love.graphics.setFont(oldFont)
 
