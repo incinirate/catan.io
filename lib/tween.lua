@@ -46,7 +46,6 @@ end
 function Tween:linear(tab, key, newValue, duration, delay)
     self:removeByKey(tab, key)
 
-    local start = os.clock() + (delay or 0)
     local orig = tab[key]
 
     local obj
@@ -56,11 +55,11 @@ function Tween:linear(tab, key, newValue, duration, delay)
         delay = delay,
         updateFn = function(dt, time)
             local current = tab[key]
-            if time - start >= duration then
+            if time - obj.start >= duration then
                 self:stop(obj)
                 return newValue
             else
-                local t = time - start
+                local t = time - obj.start
                 local d = duration
                 local b = orig
                 local c = (newValue - orig)
@@ -77,7 +76,6 @@ end
 function Tween:overshoot(tab, key, newValue, duration, amount, delay)
     self:removeByKey(tab, key)
 
-    local start = os.clock() + (delay or 0)
     local orig = tab[key]
 
     local s = amount or 1.70158
@@ -89,11 +87,11 @@ function Tween:overshoot(tab, key, newValue, duration, amount, delay)
         delay = delay,
         updateFn = function(dt, time)
             local current = tab[key]
-            if time - start >= duration then
+            if time - obj.start >= duration then
                 self:stop(obj)
                 return newValue
             else
-                local t = time - start
+                local t = time - obj.start
                 local d = duration
                 local b = orig
                 local c = (newValue - orig)
@@ -120,13 +118,20 @@ function Tween:update(dt)
     local time = os.clock()
     for i = #self.objects, 1, -1 do
         local obj = self.objects[i]
-        if obj.delay then
+        if obj.delay and obj.delay > 0 then
             obj.delay = obj.delay - dt
-        else
+            if obj.delay <= 0 then
+                obj.start = os.clock()
+            end
+        elseif not obj.delay then
             obj.delay = 0
         end
 
         if obj.delay <= 0 then
+            if not obj.start then
+                obj.start = os.clock()
+            end
+
             obj.tab[obj.key] = obj.updateFn(dt, time)
         end
     end

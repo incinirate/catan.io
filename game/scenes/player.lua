@@ -136,16 +136,15 @@ function Player:draw()
 
     -- print(transform:getHeight())
 
-    local uiScale = math.min(ow, oh) / 800 + math.random()*0.0001 --- Uhhhh, yeah lines don't draw until window is resized without this, look into this?
+    local uiScale = math.min(ow, oh) / 800
+    if uiScale == 0.6 then -- Workaround for a bug in love2d
+        uiScale = 0.60001
+    end
 
-    -- rockTest:draw(50, oh - 200)
     transform:push()
     transform:scale(uiScale, uiScale)
-    -- print(transform:getHeight())
-    -- print(uiScale)
     transform:translate(40, transform:getHeight())
 
-    -- print(love.graphics.transformPoint(0, transform:getHeight()))
     PlayerHand:draw()
     ConstructionMenu:draw()
 
