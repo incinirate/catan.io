@@ -89,8 +89,6 @@ function gfx.screenToHex(x, y, mx, my, radius)
     end
     local yPos = math.floor(y / (2*radius*segmentHeight))
 
-    -- love.graphics.print(table.concat({xBase, xOver, yroll}, ", "), 0, 0)
-    -- love.graphics.print(table.concat({xPos,yPos}, ", "), 0, 20)
     return xPos, yPos
 end
 
