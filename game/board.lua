@@ -173,27 +173,27 @@ Board:static("getCornerTiles", function(x,y)
 
     if (y % 3 == 2 and x % 2 == 0) then
         return {
-            {y23 + 2/3, x2    },
-            {y23 - 1/3, x2    },
-            {y23 - 1/3, x2 - 1}
+            {util.round(y23 + 2/3), util.round(x2    )},
+            {util.round(y23 - 1/3), util.round(x2    )},
+            {util.round(y23 - 1/3), util.round(x2 - 1)}
         }
     elseif (y % 3 == 0 and x % 2 == 1) then
         return {
-            {y23 + 1, x2 - 1/2},
-            {y23    , x2 - 1/2},
-            {y23    , x2 + 1/2}
+            {util.round(y23 + 1), util.round(x2 - 1/2)},
+            {util.round(y23    ), util.round(x2 - 1/2)},
+            {util.round(y23    ), util.round(x2 + 1/2)}
         }
     elseif (y % 3 == 2 and x % 2 == 1) then
         return {
-            {y23 - 1/3, x2 - 1/2},
-            {y23 + 2/3, x2 + 1/2},
-            {y23 + 2/3, x2 - 1/2}
+            {util.round(y23 - 1/3), util.round(x2 - 1/2)},
+            {util.round(y23 + 2/3), util.round(x2 + 1/2)},
+            {util.round(y23 + 2/3), util.round(x2 - 1/2)}
         }
     else
         return {
-            {y23 - 2/3, x2    },
-            {y23 + 1/3, x2    },
-            {y23 + 1/3, x2 - 1}
+            {util.round(y23 - 2/3), util.round(x2    )},
+            {util.round(y23 + 1/3), util.round(x2    )},
+            {util.round(y23 + 1/3), util.round(x2 - 1)}
         }
     end
 end)

@@ -4,6 +4,15 @@ function util.rgb(r, g, b)
     return {r / 255, g / 255, b / 255}
 end
 
+local floor, ceil = math.floor, math.ceil
+function util.round(x)
+    if x % 1 >= 0.5 then
+        return ceil(x)
+    else
+        return floor(x)
+    end
+end
+
 function util.mapData(tab)
     local out = {}
     for k, v in pairs(tab) do
