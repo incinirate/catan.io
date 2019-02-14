@@ -143,4 +143,5 @@ end
 
 function love.quit()
     DiscordPresence:shutdown()
+    socket:close()
 end

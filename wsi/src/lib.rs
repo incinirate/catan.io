@@ -10,7 +10,7 @@ use std::sync::{Arc, Mutex};
 use std::sync::{mpsc, mpsc::channel, mpsc::TryRecvError};
 use std::thread;
 
-use ws::{connect, Handler, Handshake, Message, Result};
+use ws::{connect, Handler, Handshake, Message, Result, CloseCode};
 
 struct Client {
     sender: mpsc::Sender<String>,
@@ -49,6 +49,14 @@ pub extern "C" fn connect_ws(address: *const c_char) -> *mut (mpsc::Receiver<Str
             let inner = out_ref.clone();
             loop {
                 let msg = inner.lock().unwrap().recv().ok().unwrap();
+                match msg.as_ref() {
+                    "disconnect" => {
+                        o2.close(CloseCode::Normal).unwrap();
+                        break;
+                    }
+                    _ => ()
+                };
+
                 match o2.send(msg) {
                     Ok(_) => true,
                     Err(_) => false
@@ -93,4 +101,10 @@ pub extern "C" fn send_ws(receiver: *mut (mpsc::Receiver<String>, mpsc::Sender<S
     Box::leak(r_box); // Make sure that Rust won't drop the receiver when we return
 
     r
+}
+
+#[no_mangle]
+pub extern "C" fn destroy_ws(receiver: *mut (mpsc::Receiver<String>, mpsc::Sender<String>)) {
+    let _r_box = unsafe { Box::from_raw(receiver) };
+    // The receiver is now owned by this scope at this point and is thus dropped here
 }
