@@ -8,4 +8,8 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.send('something');
+
+  setTimeout(() => {
+      ws.send("yo");
+  }, 1000)
 });

@@ -14,12 +14,16 @@ local PlayerScene = require("game.scenes.player")
 local player = PlayerScene()
 
 local DiscordPresence = require("game.discord")()
+local Websocket = require("lib.websocket")
+local socket
 
 function love.load()
     io.stdout:setvbuf("no")
 
     math.randomseed(os.time())
     love.math.setRandomSeed(os.time())
+
+    socket = Websocket.connect("ws://localhost:8080")
 end
 
 local arr = {
@@ -122,6 +126,11 @@ function love.update(dt)
     player:update(dt)
 
     DiscordPresence:update(dt)
+
+    local data = socket:poll()
+    if data then
+        print("Received data: " .. tostring(data))
+    end
 end
 
 function love.mousepressed(...)
