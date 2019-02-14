@@ -29,6 +29,8 @@ function ws:poll()
   local response = ffi.string(cstr)
   if response == "none" then
     return false
+  elseif response == "disconnected" then
+    return false
   else
     return response
   end
